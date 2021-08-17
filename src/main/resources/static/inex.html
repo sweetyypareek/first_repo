@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      canvas {
+        margin-left: 491px;
+        height: 165px;
+      }
+      button {
+        background-color: blue; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 10px;
+        margin-left: 582px;
+        font-weight: bold;
+      }
+      input {
+        font-weight: bolder;
+        margin-left: 532px;
+        margin-bottom: 29px;
+        height: 31px;
+      }
+    </style>
+  </head>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <body>
+    <div ng-app="myApp" ng-controller="myCtrl">
+      <div>
+        <canvas id="hexagon"></canvas>
+      </div>
+      <input type="text" ng-model="side" /><br />
+      <button type="button" ng-click="showPolygon()">Sides</button>
+    </div>
+
+    <script>
+      var app = angular.module("myApp", []);
+      app.controller("myCtrl", function ($scope, $http) {
+        $scope.showPolygon = function () {
+          console.log($scope.side);
+          var ctx = document.getElementById("hexagon").getContext("2d");
+          
+           $http.get("/Validation?Sides="+$scope.side).then(function (response) {
+        	  console.log(response);
+          }); 
+          
+         /*  $http.post("/a", $scope.side).then(function (response) {
+        	  console.log("*******************response", response);
+          }); */
+
+          // hexagon
+          var numberOfSides = $scope.side,
+            size = 20,
+            Xcenter = 125,
+            Ycenter = 120;
+
+          ctx.beginPath();
+          ctx.moveTo(
+            Xcenter + size * Math.cos(0),
+            Ycenter + size * Math.sin(0)
+          );
+
+          for (var i = 1; i <= numberOfSides; i += 1) {
+            ctx.lineTo(
+              Xcenter + size * Math.cos((i * 2 * Math.PI) / numberOfSides),
+              Ycenter + size * Math.sin((i * 2 * Math.PI) / numberOfSides)
+            );
+          }
+
+          ctx.strokeStyle = "#000000";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        };
+      });
+    </script>
+  </body>
+</html>
